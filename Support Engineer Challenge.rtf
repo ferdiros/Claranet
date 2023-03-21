@@ -1,0 +1,112 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2707
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red191\green100\blue38;\red255\green255\blue255;\red153\green168\blue186;
+\red109\green109\blue109;\red254\green187\blue91;\red88\green118\blue71;\red152\green54\blue29;\red117\green114\blue185;
+\red86\green132\blue173;}
+{\*\expandedcolortbl;;\csgenericrgb\c74902\c39216\c14902;\cssrgb\c100000\c100000\c100000;\csgenericrgb\c60000\c65882\c72941;
+\csgenericrgb\c42745\c42745\c42745;\csgenericrgb\c99608\c73333\c35686;\csgenericrgb\c34510\c46275\c27843;\csgenericrgb\c59608\c21176\c11373;\csgenericrgb\c45882\c44706\c72549;
+\csgenericrgb\c33725\c51765\c67843;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs26 \cf2 \cb3 import \cf4 shutil \cf5 #funzioni per operare con i file e le cartelle. un copia e incolla\
+\cf2 import \cf4 os \cf5 #funzioni per interagire con il sistema operativo. aprire e leggere cartelle\
+\cf2 import \cf4 schedule \cf5 #sintassi per eseguire attivit\'e0 in modo ripetitivo\
+\cf2 import \cf4 subprocess \cf5 #per eseguire funzioni esterni a python\
+\
+\cf2 def \cf6 backup_con_schedule\cf4 (directory):\
+    subprocess.run([\cf7 "rsync"\cf2 , \cf7 "-avz"\cf2 ,\cf4 directory \cf2 , \cf7 "user@192.168.1.100:/backup_folder/"\cf4 ]) \cf5 #per non tenere pycharm aperto, scriverlo in file eseguibile.\
+\
+\cf2 def \cf6 crea_backup\cf4 (src_dir\cf2 ,\cf4 bck_dst):\
+    \cf5 # Creare una cartella di backup nella destinazione scelta bck_dst\
+    \cf4 backup_dir = os.path.join(os.path.expanduser(\cf7 '~'\cf4 )\cf2 , \cf4 bck_dst\cf2 , \cf7 'backup'\cf4 ) \cf5 #creo una nuova cartella chiamata "backup" nella directory di destinazione bck_dst\
+    #os.path.join unisce il nome utente del SO, la directory di backup e la stringa backup in un unico percroso\
+    \cf4 os.makedirs(backup_dir\cf2 , \cf8 exist_ok\cf4 =\cf2 True\cf4 ) \cf5 #creo la cartella backup e controllo se gi\'e0 esiste\
+\
+    # Copiare tutti i file nella cartella di backup\
+    \cf2 for \cf4 file \cf2 in \cf4 os.listdir(src_dir): \cf5 #scansono tutti i file all'interno della cartella\
+        #creo la cartella di destinazione e copio dentro i file che ci sono all'interno della directory da backappare\
+        \cf4 src_file = os.path.join(src_dir\cf2 , \cf4 file)\
+        \cf2 if \cf4 os.path.isfile(src_file):\
+            shutil.copy2(src_file\cf2 , \cf4 backup_dir)\
+\
+\cf2 def \cf6 sostituisci_stringa\cf4 (file_path\cf2 , \cf4 stringa1\cf2 , \cf4 stringa2):\
+    \cf5 #utilizzo with t.c. il file vieni chiuso correttamente alla fine delle operazioni\
+    \cf2 with \cf9 open\cf4 (file_path\cf2 , \cf7 'r'\cf4 ) \cf2 as \cf4 file: \cf5 #file viene aperto in modalit\'e0 lettura\
+        \cf4 file_content = file.read()\
+\
+    file_content = file_content.replace(stringa1\cf2 , \cf4 stringa2) \cf5 #sostituisco\
+\
+    \cf2 with \cf9 open\cf4 (file_path\cf2 , \cf7 'w'\cf4 ) \cf2 as \cf4 file:  \cf5 #La modalit\'e0 scrittura significa che se il file esiste gi\'e0, il contenuto esistente viene sovrascritto\
+        \cf4 file.write(file_content)\
+\
+\
+\cf2 def \cf6 contatoreBash\cf4 (directory):\
+    \cf5 # Dizionario per memorizzare il conteggio degli interpreti Shebang\
+    \cf4 interpreters = \{\}\
+\
+    \cf5 # Conteggio dei file di script nella directory\
+    \cf4 script_files_count = \cf10 0\
+\
+    \cf5 # Iterazione sui file nella directory\
+    \cf2 for \cf4 filename \cf2 in \cf4 os.listdir(directory):\
+        filepath = os.path.join(directory\cf2 , \cf4 filename)\
+\
+        \cf5 # Leggere la prima riga del file\
+        \cf2 with \cf9 open\cf4 (filepath\cf2 , \cf7 'rb'\cf4 ) \cf2 as \cf4 f:\
+            \cf5 #in base all'errore decidi il tipo\
+            #first_line = f.readline().decode('utf-8').strip()\
+             \cf4 first_line = f.readline().decode(\cf7 'iso-8859-1'\cf4 ).strip()\
+\
+        \cf5 # Verificare se la prima riga \'e8 uno Shebang\
+        \cf2 if not \cf4 first_line.startswith(\cf7 '#!'\cf4 ):\
+            \cf2 continue\
+\
+        \cf5 # Estrai l'interprete Shebang\
+        \cf4 interpreter = first_line[\cf10 2\cf4 :].strip()\
+\
+        \cf5 # Aggiorna il conteggio degli interpreti Shebang\
+        \cf4 interpreters[interpreter] = interpreters.get(interpreter\cf2 , \cf10 0\cf4 ) + \cf10 1\
+\
+        \cf5 # Aggiorna il conteggio dei file di script\
+        \cf4 script_files_count += \cf10 1\
+\
+    \cf5 # Stampa il conteggio totale dei file di script\
+    \cf9 print\cf4 (\cf7 f'Total script files: \cf2 \{\cf4 script_files_count\cf2 \}\cf7 '\cf4 )\
+\
+    \cf5 # Stampa il conteggio degli interpreti Shebang\
+    \cf9 print\cf4 (\cf7 'Interpreter count:'\cf4 )\
+    \cf2 for \cf4 interpreter\cf2 , \cf4 count \cf2 in \cf9 sorted\cf4 (interpreters.items()\cf2 , \cf8 key\cf4 =\cf2 lambda \cf4 x: x[\cf10 1\cf4 ]\cf2 , \cf8 reverse\cf4 =\cf2 True\cf4 ): \cf5 #lambda \'e8 il tipo di ordinamento (occorrenze) \
+        \cf9 print\cf4 (\cf7 f'\cf2 \{\cf4 count\cf2 \} \{\cf4 interpreter\cf2 \}\cf7 '\cf4 ) \cf5 #sorted metti in ordine gli interpetri\
+\
+\cf2 if \cf4 __name__ == \cf7 "__main__"\cf4 :\
+    \cf7 """------------------ backup di cortesia cartella Claranet -----------------"""\
+    \cf4 source_dir = \cf7 '/Users/ferdinandorosella/Desktop/ProveClaranet'\
+    \cf4 bck_dst = \cf7 '/Users/ferdinandorosella/Desktop/ProveClaranet'\
+    \cf4 crea_backup(source_dir\cf2 ,\cf4 bck_dst)\
+\
+    \cf7 """--------------------Esercizio 1 ---------------------------- """\
+    """\
+    directory_path = '/Users/ferdinandorosella/Desktop/ProveClaranet'  # sostituisci con il percorso della directory desiderata\
+    stringa1 = 'Giacomo'\
+    stringa2 = 'Ferdinando'\
+\
+    for filename in os.listdir(directory_path):\
+        if filename.endswith('.rtf'):  # sostituisci con l'estensione dei file da modificare\
+            file_path = os.path.join(directory_path, filename)\
+            sostituisci_stringa(file_path, stringa1, stringa2)\
+    """\
+    """-----------------Esercizio 2---------------------------"""\
+    """\
+    contatoreBash('/Users/ferdinandorosella/Desktop/ProveClaranet/test')\
+    """\
+    """----------------Esercizio 3---------------------------"""\
+    """\
+    schedule.every().sunday.at("22:00").do(backup)\
+    \
+    while True:\
+        schedule.run_pending() #parte in loop fino a quando non arriva sabato alle 22.\
+    """\
+\
+\
+}
