@@ -8,3 +8,4 @@ Per provare il codice:
 3- cambiare i percorsi nel codice nel corrente percorso della cartella ProveClaranet
 5- scommentare l'esercizio interessato 
 6- run
+7- Claranet.zip è la cartella .zip del progetto .py
