@@ -1,0 +1,21 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2707
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 1- crea coppia di chiavi\
+2- crea gruppo di sicurezza HTTP TCP 80 0.0.0.0/0\
+					  SSH TCP 20 mio IP\
+                                             ALL IMCP . IPv4 All N/A mio IP\
+3- avvia istanza \
+4- testa da terminale ping + IP pubblico\
+5- configurazione SSH da terminale: ssh -i test-key.pem ec2-user@publicIP (afte YES)\
+6- whoami  to have the name \
+8- sudo su\
+9- whoami\
+10-  yum install -y httpd.x86_64\
+11- systemctl start htppd.service\
+12- systemctl enable http.service\
+13- echo \'93Hello world from $(hostname -f)\'94 > /var/www/html/index.html}
